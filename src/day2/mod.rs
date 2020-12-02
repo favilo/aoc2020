@@ -4,7 +4,7 @@ use anyhow::Result;
 use regex::Regex;
 
 type Pair = ((usize, usize), char);
-type Input = Vec<(Pair, String)>;
+type Input = Vec<(Pair, Vec<u8>)>;
 
 #[aoc_generator(day2)]
 fn get_input(input: &str) -> Result<Input> {
@@ -16,7 +16,7 @@ fn get_input(input: &str) -> Result<Input> {
         let end = caps[2].parse::<usize>().unwrap();
         let c = caps[3].parse::<char>().unwrap();
         let pass = caps[4].to_owned();
-        (((start, end), c), pass)
+        (((start, end), c), pass.into_bytes())
     });
     let lines = lines.collect::<Input>();
     log::info!("{}", lines.len());
@@ -26,7 +26,7 @@ fn get_input(input: &str) -> Result<Input> {
 #[aoc(day2, part1)]
 fn part1(input: &Input) -> Result<usize> {
     let correct = input.into_iter().filter(|((range, c), pass)| {
-        ((range.0)..=(range.1)).contains(&pass.chars().filter(|o| o == c).count())
+        ((range.0)..=(range.1)).contains(&pass.iter().filter(|&o| *o == *c as u8).count())
     });
     Ok(correct.count())
 }
@@ -35,12 +35,7 @@ fn part1(input: &Input) -> Result<usize> {
 fn part2(input: &Input) -> Result<usize> {
     let correct = input
         .into_iter()
-        .map(|(((f, s), c), ref pass)| {
-            (
-                pass.chars().nth(*f - 1) == Some(*c),
-                pass.chars().nth(*s - 1) == Some(*c),
-            )
-        })
+        .map(|(((f, s), c), ref pass)| (pass[*f - 1] == *c as u8, pass[*s - 1] == *c as u8))
         .filter(|(a, b)| a != b);
     Ok(correct.count())
 }
