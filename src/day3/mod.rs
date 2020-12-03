@@ -36,7 +36,7 @@ fn part1(input: &Input) -> Result<usize> {
 
 #[aoc(day3, part2)]
 fn part2(input: &Input) -> Result<usize> {
-    Ok(&[
+    Ok([
         get_trees(input, 1, 1)?,
         get_trees(input, 3, 1)?,
         get_trees(input, 5, 1)?,
