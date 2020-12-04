@@ -1,25 +1,139 @@
-// use std::borrow::Cow;
 use std::collections::HashMap;
 
 use aoc_runner_derive::{aoc, aoc_generator};
 
 use anyhow::Result;
-use itertools::Itertools;
+use itertools::{join, Itertools};
 
-// I would love to get either of these working
-// #[derive(Default, Debug, Clone)]
-// struct Passport<'a> {
-//     birth_year: Option<Cow<'a, str>>,
-//     issue_year: Option<Cow<'a, str>>,
-//     expire_year: Option<Cow<'a, str>>,
-//     height: Option<Cow<'a, str>>,
-//     hair_color: Option<Cow<'a, str>>,
-//     eye_color: Option<Cow<'a, str>>,
-//     passport_id: Option<Cow<'a, str>>,
-//     country_id: Option<Cow<'a, str>>,
-// }
-// type Input<'a> = Vec<Passport<'a>>;
-// type Input<'a> = Vec<HashMap<&str, &str>>;
+#[derive(Default, Debug, Clone)]
+struct Passport {
+    birth_year: Option<usize>,
+    issue_year: Option<usize>,
+    expire_year: Option<usize>,
+    height: Option<Height>,
+    hair_color: Option<HairColor>,
+    eye_color: Option<EyeColor>,
+    passport_id: Option<bool>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+enum Height {
+    Cm(usize),
+    In(usize),
+    Wrong,
+}
+
+impl Height {
+    fn from(s: &str) -> Option<Self> {
+        let len = &s[..s.len() - 2];
+        let unit = &s[s.len() - 2..];
+        match unit {
+            "cm" => Some(Self::Cm(len.parse().unwrap_or(0))),
+            "in" => Some(Self::In(len.parse().unwrap_or(0))),
+            _ => Some(Self::Wrong),
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+enum EyeColor {
+    Correct,
+    Wrong,
+}
+
+impl EyeColor {
+    fn from(s: &str) -> Self {
+        match s {
+            "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth" => Self::Correct,
+            _ => Self::Wrong,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+enum HairColor {
+    Correct,
+    Wrong,
+}
+
+impl HairColor {
+    fn from(s: &str) -> Self {
+        if s.starts_with('#') && s.len() == 7 && s.chars().skip(1).all(|c| c.is_ascii_hexdigit()) {
+            Self::Correct
+        } else {
+            Self::Wrong
+        }
+    }
+}
+
+impl Passport {
+    fn new(line: &str) -> Option<Self> {
+        let mut this = Self::default();
+        line.split_whitespace().for_each(|entry| {
+            let entry = entry.split(":").collect::<Vec<_>>();
+            let (k, v) = (entry[0], entry[1]);
+            match k {
+                "byr" => this.birth_year = Some(v.parse().unwrap_or(0)),
+                "iyr" => this.issue_year = Some(v.parse().unwrap_or(0)),
+                "eyr" => this.expire_year = Some(v.parse().unwrap_or(0)),
+                "hcl" => this.hair_color = Some(HairColor::from(v)),
+                "ecl" => this.eye_color = Some(EyeColor::from(v)),
+                "pid" => {
+                    this.passport_id = Some(v.len() == 9 && v.chars().all(|c| c.is_ascii_digit()))
+                }
+                "hgt" => this.height = Height::from(v),
+                _ => (),
+            }
+        });
+        Some(this)
+    }
+
+    fn contains_all(&self) -> bool {
+        self.birth_year.is_some()
+            && self.issue_year.is_some()
+            && self.expire_year.is_some()
+            && self.height.is_some()
+            && self.hair_color.is_some()
+            && self.eye_color.is_some()
+            && self.passport_id.is_some()
+    }
+    fn is_valid(&self) -> bool {
+        (1920..=2002).contains(&self.birth_year.unwrap_or(0))
+            && (2010..=2020).contains(&self.issue_year.unwrap_or(0))
+            && (2020..=2030).contains(&self.expire_year.unwrap_or(0))
+            && self.hair_color == Some(HairColor::Correct)
+            && self.eye_color == Some(EyeColor::Correct)
+            && match self.height {
+                Some(Height::Cm(i)) => (150..=193).contains(&i),
+                Some(Height::In(i)) => (59..=76).contains(&i),
+                _ => false,
+            }
+            && self.passport_id == Some(true)
+    }
+}
+
+type Input = Vec<Passport>;
+
+#[aoc_generator(day4, name=Struct)]
+fn get_input_struct(input: &str) -> Result<Input> {
+    Ok(input
+        .lines()
+        .group_by(|l| l.is_empty())
+        .into_iter()
+        .map(|(_, l)| join(l, " "))
+        .filter_map(|l| Passport::new(&l))
+        .collect())
+}
+
+#[aoc(day4, part1, Struct)]
+fn part1_struct(input: &Input) -> Result<usize> {
+    Ok(input.iter().filter(|p| p.contains_all()).count())
+}
+
+#[aoc(day4, part2, Struct)]
+fn part2_struct(input: &Input) -> Result<usize> {
+    Ok(input.iter().filter(|p| p.is_valid()).count())
+}
 
 #[aoc_generator(day4)]
 fn get_input(input: &str) -> Result<Vec<HashMap<String, String>>> {
@@ -114,23 +228,23 @@ mod tests {
 
     #[test]
     fn invalid() -> Result<()> {
-        let input = get_input(
-            "eyr:1972 cid:100\n\
-             hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926\n\
-             \n\
-             iyr:2019\n\
-             hcl:#602927 eyr:1967 hgt:170cm\n\
-             ecl:grn pid:012533040 byr:1946\n\
-             \n\
-             hcl:dab227 iyr:2012\n\
-             ecl:brn hgt:182cm pid:021572410 eyr:2020 byr:1992 cid:277\n\
-             \n\
-             hgt:59cm ecl:zzz\n\
-             eyr:2038 hcl:74454a iyr:2023\n\
-             pid:3556412378 byr:2007 ",
-        )
-        .unwrap();
-        assert_eq!(0, part2(&input)?);
+        let input = "eyr:1972 cid:100\n\
+                        hcl:#18171d ecl:amb hgt:170 pid:186cm iyr:2018 byr:1926\n\
+                        \n\
+                        iyr:2019\n\
+                        hcl:#602927 eyr:1967 hgt:170cm\n\
+                        ecl:grn pid:012533040 byr:1946\n\
+                        \n\
+                        hcl:dab227 iyr:2012\n\
+                        ecl:brn hgt:182cm pid:021572410 eyr:2020 byr:1992 cid:277\n\
+                        \n\
+                        hgt:59cm ecl:zzz\n\
+                        eyr:2038 hcl:74454a iyr:2023\n\
+                        pid:3556412378 byr:2007 ";
+        let map = get_input(input).unwrap();
+        let pass = get_input_struct(input).unwrap();
+        assert_eq!(0, part2(&map)?);
+        assert_eq!(0, part2_struct(&pass)?);
         Ok(())
     }
 
