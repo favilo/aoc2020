@@ -55,6 +55,8 @@ dependencies = [
  "log",
  "ndarray",
  "regex",
+ "serde",
+ "serde_derive",
 ]
 
 [[package]]

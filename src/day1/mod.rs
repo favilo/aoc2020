@@ -35,4 +35,3 @@ fn part2_contains(input: &Input) -> Result<i32> {
         .map(|(a, b, c)| a * b * c);
     Ok(products.next().unwrap())
 }
-
