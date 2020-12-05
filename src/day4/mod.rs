@@ -1,12 +1,16 @@
 use std::collections::HashMap;
 
-use aoc_runner_derive::{aoc, aoc_generator};
-
 use anyhow::Result;
 use itertools::{join, Itertools};
 
+use crate::Runner;
+
+pub struct Day04;
+
+pub struct Day04Slow;
+
 #[derive(Default, Debug, Clone)]
-struct Passport {
+pub struct Passport {
     birth_year: Option<usize>,
     issue_year: Option<usize>,
     expire_year: Option<usize>,
@@ -112,91 +116,107 @@ impl Passport {
     }
 }
 
-type Input = Vec<Passport>;
+impl Runner for Day04 {
+    type Input = Vec<Passport>;
+    type Output = usize;
 
-#[aoc_generator(day4, name=Struct)]
-fn get_input_struct(input: &str) -> Result<Input> {
-    Ok(input
-        .lines()
-        .group_by(|l| l.is_empty())
-        .into_iter()
-        .map(|(_, l)| join(l, " "))
-        .filter_map(|l| Passport::new(&l))
-        .collect())
+    fn day() -> usize {
+        4
+    }
+
+    fn get_input(input: &str) -> Result<Self::Input> {
+        Ok(input
+            .lines()
+            .group_by(|l| l.is_empty())
+            .into_iter()
+            .map(|(_, l)| join(l, " "))
+            .filter_map(|l| Passport::new(&l))
+            .collect())
+    }
+
+    fn part1(input: &Self::Input) -> Result<usize> {
+        Ok(input.iter().filter(|p| p.contains_all()).count())
+    }
+
+    fn part2(input: &Self::Input) -> Result<usize> {
+        Ok(input.iter().filter(|p| p.is_valid()).count())
+    }
 }
 
-#[aoc(day4, part1, Struct)]
-fn part1_struct(input: &Input) -> Result<usize> {
-    Ok(input.iter().filter(|p| p.contains_all()).count())
-}
+impl Runner for Day04Slow {
+    type Input = Vec<HashMap<String, String>>;
+    type Output = usize;
 
-#[aoc(day4, part2, Struct)]
-fn part2_struct(input: &Input) -> Result<usize> {
-    Ok(input.iter().filter(|p| p.is_valid()).count())
-}
+    fn day() -> usize {
+        4
+    }
 
-#[aoc_generator(day4)]
-fn get_input(input: &str) -> Result<Vec<HashMap<String, String>>> {
-    let entries = input
-        .split("\n\n")
-        .map(|entry| {
-            entry
-                .split_whitespace()
-                .flat_map(|p| p.split(":"))
-                .map(&str::to_owned)
-                .tuples()
-                .collect()
-        })
-        .collect::<Vec<HashMap<_, _>>>();
-    Ok(entries)
-}
+    fn comment() -> &'static str {
+        "Slow"
+    }
 
-#[aoc(day4, part1)]
-fn part1(input: &Vec<HashMap<String, String>>) -> Result<usize> {
-    Ok(input
-        .iter()
-        .filter(|pass| {
-            ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
-                .iter()
-                .all(|k| pass.contains_key(*k))
-        })
-        .count())
-}
-
-#[aoc(day4, part2)]
-fn part2(input: &Vec<HashMap<String, String>>) -> Result<usize> {
-    Ok(input
-        .iter()
-        .filter(|pass| {
-            ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
-                .iter()
-                .all(|k| pass.contains_key(*k))
-        })
-        .filter(|pass| {
-            pass.iter().all(|(k, v)| match k.as_str() {
-                "byr" => (1920..=2002).contains(&v.parse().unwrap_or(0)),
-                "iyr" => (2010..=2020).contains(&v.parse().unwrap_or(0)),
-                "eyr" => (2020..=2030).contains(&v.parse().unwrap_or(0)),
-                "hcl" => {
-                    v.starts_with('#')
-                        && v.len() == 7
-                        && v.chars().skip(1).all(|c| c.is_ascii_hexdigit())
-                }
-                "ecl" => ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].contains(&v.as_str()),
-                "pid" => v.len() == 9 && v.chars().all(|c| c.is_ascii_digit()),
-                "cid" => true,
-                "hgt" => {
-                    let height = v[0..(v.len() - 2)].parse().unwrap_or(0);
-                    match &v[(v.len() - 2)..] {
-                        "cm" => (150..=193).contains(&height),
-                        "in" => (59..=76).contains(&height),
-                        _ => false,
-                    }
-                }
-                _ => unreachable!(),
+    fn get_input(input: &str) -> Result<Vec<HashMap<String, String>>> {
+        let entries = input
+            .split("\n\n")
+            .map(|entry| {
+                entry
+                    .split_whitespace()
+                    .flat_map(|p| p.split(":"))
+                    .map(&str::to_owned)
+                    .tuples()
+                    .collect()
             })
-        })
-        .count())
+            .collect::<Vec<HashMap<_, _>>>();
+        Ok(entries)
+    }
+
+    fn part1(input: &Vec<HashMap<String, String>>) -> Result<usize> {
+        Ok(input
+            .iter()
+            .filter(|pass| {
+                ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
+                    .iter()
+                    .all(|k| pass.contains_key(*k))
+            })
+            .count())
+    }
+
+    fn part2(input: &Vec<HashMap<String, String>>) -> Result<usize> {
+        Ok(input
+            .iter()
+            .filter(|pass| {
+                ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
+                    .iter()
+                    .all(|k| pass.contains_key(*k))
+            })
+            .filter(|pass| {
+                pass.iter().all(|(k, v)| match k.as_str() {
+                    "byr" => (1920..=2002).contains(&v.parse().unwrap_or(0)),
+                    "iyr" => (2010..=2020).contains(&v.parse().unwrap_or(0)),
+                    "eyr" => (2020..=2030).contains(&v.parse().unwrap_or(0)),
+                    "hcl" => {
+                        v.starts_with('#')
+                            && v.len() == 7
+                            && v.chars().skip(1).all(|c| c.is_ascii_hexdigit())
+                    }
+                    "ecl" => {
+                        ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].contains(&v.as_str())
+                    }
+                    "pid" => v.len() == 9 && v.chars().all(|c| c.is_ascii_digit()),
+                    "cid" => true,
+                    "hgt" => {
+                        let height = v[0..(v.len() - 2)].parse().unwrap_or(0);
+                        match &v[(v.len() - 2)..] {
+                            "cm" => (150..=193).contains(&height),
+                            "in" => (59..=76).contains(&height),
+                            _ => false,
+                        }
+                    }
+                    _ => unreachable!(),
+                })
+            })
+            .count())
+    }
 }
 
 #[cfg(test)]

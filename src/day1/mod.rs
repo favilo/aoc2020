@@ -1,7 +1,6 @@
 use anyhow::Result;
 use itertools::iproduct;
 use std::collections::HashSet;
-use std::time::Instant;
 
 use crate::Runner;
 
