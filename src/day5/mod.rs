@@ -25,7 +25,7 @@ impl Runner for Day05 {
             .map(|l| {
                 l.chars().rev().enumerate().fold(0, |acc, (i, c)| {
                     if c == 'B' || c == 'R' {
-                        acc + 2usize.pow(i as u32)
+                        acc + (1 << i)
                     } else {
                         acc
                     }

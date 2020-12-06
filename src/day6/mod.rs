@@ -99,7 +99,7 @@ impl Runner for Day06 {
                 group
                     .iter()
                     // This looks weird, but it's twice as fast as  `('a'..='z').collect()` as the initial
-                    .fold(std::u32::MAX, |acc, set| acc & set)
+                    .fold(u32::MAX, |acc, set| acc & set)
             })
             .map(|g| g.count_ones() as usize)
             .sum())
