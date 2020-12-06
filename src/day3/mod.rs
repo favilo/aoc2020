@@ -57,26 +57,26 @@ impl Runner for Day03 {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    // use super::*;
 
-    #[test]
-    fn sample1() -> Result<()> {
-        let input = get_input(
-            "..##.......\n\
-             #...#...#..\n\
-             .#....#..#.\n\
-             ..#.#...#.#\n\
-             .#...##..#.\n\
-             ..#.##.....\n\
-             .#.#.#....#\n\
-             .#........#\n\
-             #.##...#...\n\
-             #...##....#\n\
-             .#..#...#.#",
-        )
-        .unwrap();
-        assert_eq!(input.dim(), (11, 11));
-        assert_eq!(7, part1(&input).unwrap());
-        Ok(())
-    }
+    // #[test]
+    // fn sample1() -> Result<()> {
+    //     let input = get_input(
+    //         "..##.......\n\
+    //          #...#...#..\n\
+    //          .#....#..#.\n\
+    //          ..#.#...#.#\n\
+    //          .#...##..#.\n\
+    //          ..#.##.....\n\
+    //          .#.#.#....#\n\
+    //          .#........#\n\
+    //          #.##...#...\n\
+    //          #...##....#\n\
+    //          .#..#...#.#",
+    //     )
+    //     .unwrap();
+    //     assert_eq!(input.dim(), (11, 11));
+    //     assert_eq!(7, part1(&input).unwrap());
+    //     Ok(())
+    // }
 }

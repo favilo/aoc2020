@@ -26,7 +26,8 @@ fn setup_logger() -> Result<()> {
 
 fn main() -> Result<()> {
     setup_logger()?;
-    aoc2020::run()?;
+    let time = aoc2020::run()?;
+    log::info!("Total Time: {:?}", time);
 
     Ok(())
 }
