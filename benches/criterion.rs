@@ -2,7 +2,7 @@ use std::fs::read_to_string;
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
-use aoc2020::{day1, day2, day3, day4, day5, Runner};
+use aoc2020::{day1, day2, day3, day4, day5, day6, Runner};
 
 fn day01(c: &mut Criterion) {
     let mut group = c.benchmark_group("day01");
@@ -84,5 +84,21 @@ fn day05(c: &mut Criterion) {
     group.finish();
 }
 
-criterion_group!(benches, day01, day02, day03, day04, day05);
+fn day06(c: &mut Criterion) {
+    let mut group = c.benchmark_group("day06");
+    let input = read_to_string(format!("input/2020/day{}.txt", day6::Day06::day())).unwrap();
+    group.bench_function("get_input", |b| {
+        b.iter(|| <day6::Day06 as Runner>::get_input(black_box(&input)))
+    });
+    let input = <day6::Day06 as Runner>::get_input(&input).unwrap();
+    group.bench_function("part1", |b| {
+        b.iter(|| <day6::Day06 as Runner>::part1(black_box(&input)))
+    });
+    group.bench_function("part2", |b| {
+        b.iter(|| <day6::Day06 as Runner>::part2(black_box(&input)))
+    });
+    group.finish();
+}
+
+criterion_group!(benches, day01, day02, day03, day04, day05, day06);
 criterion_main!(benches);

@@ -11,14 +11,17 @@ pub mod day2;
 pub mod day3;
 pub mod day4;
 pub mod day5;
+pub mod day6;
 
 pub fn run() -> Result<Duration> {
     let mut total_time = day1::Day01::run()?;
     total_time += day2::Day02::run()?;
     total_time += day3::Day03::run()?;
     total_time += day4::Day04::run()?;
-    // day4::Day04Slow::run()?;
+    day4::Day04Slow::run()?;
     total_time += day5::Day05::run()?;
+    total_time += day6::Day06::run()?;
+    day6::Day06Slow::run()?;
     Ok(total_time)
 }
 
