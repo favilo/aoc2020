@@ -67,13 +67,13 @@ impl Runner for Day07 {
         let mut hasher = DefaultHasher::new();
         Hash::hash("shiny gold".into(), &mut hasher);
         let shiny_gold = hasher.finish();
+
         let contained_in = input
             .iter()
             .map(|(&bag, contains)| {
                 contains
                     .into_iter()
-                    .cloned()
-                    .map(|(_, contain)| (contain, bag))
+                    .map(|(_, contain)| (*contain, bag))
                     .collect::<Vec<_>>()
             })
             .flatten()
