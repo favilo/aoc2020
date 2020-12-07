@@ -9,7 +9,6 @@ edition = "2018"
 [dependencies]
 anyhow = "1.0.34"
 chrono = "0.4.19"
-colored = "2.0.0"
 fern = { version = "0.6.0", features = ["colored"] }
 itertools = "0.9.0"
 log = "0.4.11"
@@ -17,6 +16,9 @@ ndarray = "0.14.0"
 regex = "1.4.2"
 serde = "1.0.117"
 serde_derive = "1.0.117"
+lazy_static = "1.4.0"
+multimap = "0.8.2"
+rayon = "1.5.0"
 
 [dev-dependencies]
 criterion = "0.3.3"
@@ -24,3 +26,6 @@ criterion = "0.3.3"
 [[bench]]
 name = "criterion"
 harness = false
+
+[profile.release]
+opt-level = 3

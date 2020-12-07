@@ -21,12 +21,14 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
- "colored 2.0.0",
  "criterion",
  "fern",
  "itertools",
+ "lazy_static",
  "log",
+ "multimap",
  "ndarray",
+ "rayon",
  "regex",
  "serde",
  "serde_derive",
@@ -129,17 +131,6 @@ name = "colored"
 version = "1.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f4ffc801dacf156c5854b9df4f425a626539c3a6ef7893cc0c5084a23f0b6c59"
-dependencies = [
- "atty",
- "lazy_static",
- "winapi",
-]
-
-[[package]]
-name = "colored"
-version = "2.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b3616f750b84d8f0de8a58bda93e08e2a81ad3f523089b05f1dffecab48c6cbd"
 dependencies = [
  "atty",
  "lazy_static",
@@ -268,7 +259,7 @@ version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8c9a4820f0ccc8a7afd67c39a0f1a0f4b07ca1725164271a64939d7aeb9af065"
 dependencies = [
- "colored 1.9.3",
+ "colored",
  "log",
 ]
 
@@ -354,6 +345,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "157b4208e3059a8f9e78d559edc658e13df41410cb3ae03979c83130067fdd87"
 dependencies = [
  "autocfg",
+]
+
+[[package]]
+name = "multimap"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1255076139a83bb467426e7f8d0134968a8118844faa755985e077cf31850333"
+dependencies = [
+ "serde",
 ]
 
 [[package]]
