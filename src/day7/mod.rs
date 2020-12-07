@@ -1,9 +1,7 @@
-use std::collections::hash_map::DefaultHasher;
-use std::collections::HashMap;
-use std::collections::HashSet;
-use std::collections::VecDeque;
-use std::hash::Hash;
-use std::hash::Hasher;
+use std::{
+    collections::{hash_map::DefaultHasher, HashMap, HashSet, VecDeque},
+    hash::{Hash, Hasher},
+};
 
 use anyhow::Result;
 use multimap::MultiMap;
@@ -39,7 +37,7 @@ impl Runner for Day07 {
                 let captures = BAG_RE.captures(l).unwrap();
                 let bag: String = captures.get(1).unwrap().as_str().into();
                 let mut hasher = DefaultHasher::new();
-                Hash::hash(&bag, &mut hasher);
+                bag.hash(&mut hasher);
                 (hasher.finish(), captures.get(2).unwrap())
             })
             .map(|(bag, contains)| {
@@ -50,7 +48,7 @@ impl Runner for Day07 {
                         .map(|c| {
                             let bag: String = c.get(2).unwrap().as_str().into();
                             let mut hasher = DefaultHasher::new();
-                            Hash::hash(&bag, &mut hasher);
+                            bag.hash(&mut hasher);
                             (
                                 c.get(1).unwrap().as_str().parse::<usize>().unwrap(),
                                 hasher.finish(),
@@ -65,7 +63,7 @@ impl Runner for Day07 {
 
     fn part1(input: &Self::Input) -> Result<usize> {
         let mut hasher = DefaultHasher::new();
-        Hash::hash("shiny gold".into(), &mut hasher);
+        "shiny gold".hash(&mut hasher);
         let shiny_gold = hasher.finish();
 
         let contained_in = input
@@ -99,7 +97,7 @@ impl Runner for Day07 {
 
     fn part2(input: &Self::Input) -> Result<usize> {
         let mut hasher = DefaultHasher::new();
-        Hash::hash("shiny gold".into(), &mut hasher);
+        "shiny gold".hash(&mut hasher);
         let shiny_gold = hasher.finish();
 
         let mut queue = VecDeque::<(usize, u64)>::new();
