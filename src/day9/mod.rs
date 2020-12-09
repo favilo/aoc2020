@@ -79,8 +79,8 @@ pub fn get_oddball(input: &Vec<usize>, window: usize) -> Result<(usize, usize)> 
                 check,
                 window[..window.len() - 1]
                     .into_iter()
-                    .combinations(2)
-                    .filter(move |v| *v[0] + *v[1] == check)
+                    .tuple_combinations()
+                    .filter(move |(&a, &b)| a + b == check)
                     .next(),
             )
         })
@@ -92,15 +92,13 @@ pub fn get_oddball(input: &Vec<usize>, window: usize) -> Result<(usize, usize)> 
 
 pub fn get_run(input: &Vec<usize>, idx: usize, target: usize) -> Result<(usize, usize)> {
     for i in 2..idx {
-        let mut answer = input[..idx]
-            .windows(i)
-            .filter_map(|window| {
-                if window.iter().sum::<usize>() == target {
-                    Some((window.iter().min().unwrap(), window.iter().max().unwrap()))
-                } else {
-                    None
-                }
-            });
+        let mut answer = input[..idx].windows(i).filter_map(|window| {
+            if window.iter().sum::<usize>() == target {
+                Some((window.iter().min().unwrap(), window.iter().max().unwrap()))
+            } else {
+                None
+            }
+        });
 
         let answer = answer.next();
         if answer.is_some() {
