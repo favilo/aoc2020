@@ -1,9 +1,30 @@
 use anyhow::Result;
-use regex::Regex;
+use nom::character::complete::anychar;
+use nom::{
+    bytes::complete::tag,
+    character::complete::digit1,
+    character::complete::{alpha1, multispace0, space1},
+    sequence::{terminated, tuple},
+};
 
 use crate::Runner;
 
 pub struct Day02;
+
+fn parse_line(input: &str) -> nom::IResult<&str, (usize, usize, u8, Vec<u8>)> {
+    let (input, (s, _dash, e)) = terminated(tuple((digit1, tag("-"), digit1)), space1)(input)?;
+    let (input, n) = terminated(anychar, tuple((tag(":"), space1)))(input)?;
+    let (input, v) = terminated(alpha1, multispace0)(input)?;
+    Ok((
+        input,
+        (
+            s.parse().unwrap(),
+            e.parse().unwrap(),
+            n as u8,
+            v.to_owned().into_bytes(),
+        ),
+    ))
+}
 
 type Pair = ((usize, usize), u8);
 impl Runner for Day02 {
@@ -17,17 +38,12 @@ impl Runner for Day02 {
     #[inline]
     fn get_input(input: &str) -> Result<Self::Input> {
         let lines = input.lines();
-        let re = Regex::new(r"(\d+)-(\d+) (.): (.+)").unwrap();
-        let lines = lines.filter(|l| re.is_match(&l)).map(|line| {
-            let caps = re.captures(&line).unwrap();
-            let start = caps[1].parse::<usize>().unwrap();
-            let end = caps[2].parse::<usize>().unwrap();
-            let c = caps[3].parse::<char>().unwrap() as u8;
-            let pass = caps[4].to_owned();
-            (((start, end), c), pass.into_bytes())
+        let lines = lines.map(|line| {
+            let (input, (start, end, c, pass)) = parse_line(line).unwrap();
+            assert_eq!("", input);
+            (((start, end), c), pass)
         });
         let lines = lines.collect::<Self::Input>();
-        log::info!("{}", lines.len());
         Ok(lines)
     }
 
