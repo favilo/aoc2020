@@ -14,6 +14,7 @@ pub mod day5;
 pub mod day6;
 pub mod day7;
 pub mod day8;
+pub mod day9;
 pub mod machine;
 
 pub fn run() -> Result<Duration> {
@@ -27,6 +28,7 @@ pub fn run() -> Result<Duration> {
     // day6::Day06Slow::run()?;
     total_time += day7::Day07::run()?;
     total_time += day8::Day08::run()?;
+    total_time += day9::Day09::run()?;
     Ok(total_time)
 }
 
