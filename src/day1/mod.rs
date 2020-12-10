@@ -1,5 +1,5 @@
 use anyhow::Result;
-use itertools::iproduct;
+use itertools::Itertools;
 use std::collections::HashSet;
 
 use crate::Runner;
@@ -33,7 +33,9 @@ impl Runner for Day01 {
     }
 
     fn part2(input: &Self::Input) -> Result<Self::Output> {
-        let mut products = iproduct!(input.iter(), input.iter())
+        let mut products = input
+            .iter()
+            .tuple_combinations()
             .filter(|(&a, &b)| a + b < 2020)
             .map(|(&a, &b)| (a, b, 2020 - a - b))
             .filter(|(_, _, c)| input.contains(&c))
