@@ -2,7 +2,7 @@ use std::fs::read_to_string;
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
-use aoc2020::{day1, day10, day2, day3, day4, day5, day6, day7, day8, day9, Runner};
+use aoc2020::{day1, day10, day11, day12, day2, day3, day4, day5, day6, day7, day8, day9, Runner};
 
 fn day01(c: &mut Criterion) {
     let mut group = c.benchmark_group("day01");
@@ -166,5 +166,68 @@ fn day10(c: &mut Criterion) {
     group.finish();
 }
 
-criterion_group!(benches, day01, day02, day03, day04, day05, day06, day07, day08, day09, day10);
+fn day11(c: &mut Criterion) {
+    let mut group = c.benchmark_group("day11");
+    let input = read_to_string(format!("input/2020/day{}.txt", day11::Day11::day())).unwrap();
+    group.bench_function("get_input", |b| {
+        b.iter(|| <day11::Day11 as Runner>::get_input(black_box(&input)))
+    });
+    let input = <day11::Day11 as Runner>::get_input(&input).unwrap();
+    group.bench_function("part1", |b| {
+        b.iter(|| <day11::Day11 as Runner>::part1(black_box(&input)))
+    });
+    group.bench_function("part2", |b| {
+        b.iter(|| <day11::Day11 as Runner>::part2(black_box(&input)))
+    });
+    group.finish();
+}
+
+fn day11_unsafe(c: &mut Criterion) {
+    let mut group = c.benchmark_group("day11 unsafe");
+    let input = read_to_string(format!("input/2020/day{}.txt", day11::Day11::day())).unwrap();
+    group.bench_function("get_input", |b| {
+        b.iter(|| <day11::Day11Unsafe as Runner>::get_input(black_box(&input)))
+    });
+    let input = <day11::Day11Unsafe as Runner>::get_input(&input).unwrap();
+    group.bench_function("part1", |b| {
+        b.iter(|| <day11::Day11Unsafe as Runner>::part1(black_box(&input)))
+    });
+    group.bench_function("part2", |b| {
+        b.iter(|| <day11::Day11Unsafe as Runner>::part2(black_box(&input)))
+    });
+    group.finish();
+}
+
+fn day12(c: &mut Criterion) {
+    let mut group = c.benchmark_group("day12");
+    let input = read_to_string(format!("input/2020/day{}.txt", day12::Day12::day())).unwrap();
+    group.bench_function("get_input", |b| {
+        b.iter(|| <day12::Day12 as Runner>::get_input(black_box(&input)))
+    });
+    let input = <day12::Day12 as Runner>::get_input(&input).unwrap();
+    group.bench_function("part1", |b| {
+        b.iter(|| <day12::Day12 as Runner>::part1(black_box(&input)))
+    });
+    group.bench_function("part2", |b| {
+        b.iter(|| <day12::Day12 as Runner>::part2(black_box(&input)))
+    });
+    group.finish();
+}
+
+criterion_group!(
+    benches,
+    day01,
+    day02,
+    day03,
+    day04,
+    day05,
+    day06,
+    day07,
+    day08,
+    day09,
+    day10,
+    day11,
+    day11_unsafe,
+    day12,
+);
 criterion_main!(benches);

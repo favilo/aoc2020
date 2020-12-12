@@ -1,5 +1,6 @@
 use anyhow::Result;
 use itertools::Itertools;
+use std::iter::once;
 use std::{collections::BTreeSet, str::FromStr};
 
 use crate::Runner;
@@ -15,11 +16,10 @@ impl Runner for Day10 {
     }
 
     fn get_input(input: &str) -> Result<Self::Input> {
-        let mut v: Self::Input = (0..)
-            .take(1)
+        let mut v: Self::Input = once(0)
             .chain(input.lines().map(usize::from_str).map(Result::unwrap))
             .collect();
-        v.insert(v.iter().max().unwrap() + 3);
+        v.insert(v.iter().next_back().unwrap() + 3);
         Ok(v)
     }
 

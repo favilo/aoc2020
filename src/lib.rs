@@ -7,6 +7,9 @@ use std::{
 use anyhow::Result;
 
 pub mod day1;
+pub mod day10;
+pub mod day11;
+pub mod day12;
 pub mod day2;
 pub mod day3;
 pub mod day4;
@@ -15,7 +18,6 @@ pub mod day6;
 pub mod day7;
 pub mod day8;
 pub mod day9;
-pub mod day10;
 pub mod machine;
 
 pub fn run() -> Result<Duration> {
@@ -28,9 +30,13 @@ pub fn run() -> Result<Duration> {
     total_time += day6::Day06::run()?;
     // day6::Day06Slow::run()?;
     total_time += day7::Day07::run()?;
+    // day7::Day07Dag::run()?;
     total_time += day8::Day08::run()?;
     total_time += day9::Day09::run()?;
     total_time += day10::Day10::run()?;
+    day11::Day11::run()?;
+    total_time += day11::Day11Unsafe::run()?;
+    total_time += day12::Day12::run()?;
     Ok(total_time)
 }
 
