@@ -31,13 +31,10 @@ impl Runner for Day08 {
         let machine = Machine::new(input);
         let mut machines = input
             .iter()
-            .zip(0..input.len())
+            .enumerate()
             .rev()
-            .filter(|(&op, _)| match op {
-                Op::Jmp(_) | Op::Nop(_) => true,
-                _ => false,
-            })
-            .filter_map(|(_, idx)| {
+            .filter(|(_, &op)| matches!(op, Op::Jmp(_) | Op::Nop(_)))
+            .filter_map(|(idx, _)| {
                 let mut machine = machine.clone();
                 machine.flip(idx);
 

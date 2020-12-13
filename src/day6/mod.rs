@@ -33,21 +33,21 @@ impl Runner for Day06Slow {
 
     fn part1(input: &Self::Input) -> Result<usize> {
         Ok(input
-            .into_iter()
+            .iter()
             .map(|group| group.iter().flatten().collect::<HashSet<_>>().len())
             .sum())
     }
 
     fn part2(input: &Self::Input) -> Result<usize> {
         Ok(input
-            .into_iter()
+            .iter()
             .map(|group| {
                 group
                     .iter()
                     // This looks weird, but it's twice as fast as  `('a'..='z').collect()` as the initial
                     .fold(None, |acc: Option<HashSet<char>>, set| {
                         acc.map(|a| a.intersection(&set).copied().collect())
-                            .or(Some(set.clone()))
+                            .or_else(|| Some(set.clone()))
                     })
                     .unwrap()
                     .len()
@@ -76,7 +76,7 @@ impl Runner for Day06 {
                     .lines()
                     .map(|l| {
                         let mut bits = 0;
-                        l.chars().for_each(|c| bits |= 1 << (c as u8 - 'a' as u8));
+                        l.chars().for_each(|c| bits |= 1 << (c as u8 - b'a'));
                         bits
                     })
                     .collect()
@@ -86,7 +86,7 @@ impl Runner for Day06 {
 
     fn part1(input: &Self::Input) -> Result<usize> {
         Ok(input
-            .into_iter()
+            .iter()
             .map(|group| group.iter().fold(0u32, |acc, a| acc | a))
             .map(|g| g.count_ones() as usize)
             .sum())
@@ -94,7 +94,7 @@ impl Runner for Day06 {
 
     fn part2(input: &Self::Input) -> Result<usize> {
         Ok(input
-            .into_iter()
+            .iter()
             .map(|group| {
                 group
                     .iter()

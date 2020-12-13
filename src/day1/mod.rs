@@ -25,7 +25,7 @@ impl Runner for Day01 {
 
     fn part1(input: &Self::Input) -> Result<Self::Output> {
         let mut products = input
-            .into_iter()
+            .iter()
             .map(|&a| (a, 2020 - a))
             .filter(|(_, b)| input.contains(&b))
             .map(|(a, b)| a * b);

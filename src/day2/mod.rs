@@ -49,8 +49,8 @@ impl Runner for Day02 {
 
     #[inline]
     fn part1(input: &Self::Input) -> Result<usize> {
-        let correct = input.into_iter().filter(|&(((s, e), c), pass)| -> bool {
-            (*s..=*e).contains(&pass.iter().filter(|o| o == &c).count())
+        let correct = input.iter().filter(|&(((s, e), c), pass)| -> bool {
+            (*s..=*e).contains(&bytecount::count(pass, *c))
         });
         Ok(correct.count())
     }
@@ -58,7 +58,7 @@ impl Runner for Day02 {
     #[inline]
     fn part2(input: &Self::Input) -> Result<usize> {
         let correct = input
-            .into_iter()
+            .iter()
             .map(|(((f, s), c), ref pass)| (pass[*f - 1] == *c as u8, pass[*s - 1] == *c as u8))
             .filter(|(a, b)| a != b);
         Ok(correct.count())

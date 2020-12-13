@@ -37,8 +37,10 @@ fn parse_clause<'a>(input: &'a str) -> IResult<&'a str, (usize, u64)> {
     Ok((input, (num.parse().unwrap(), bag_hash)))
 }
 
+type BagDef = (u64, Vec<(usize, u64)>);
+
 #[allow(dead_code)]
-fn parse_bag<'a>(input: &'a str) -> IResult<&'a str, (u64, Vec<(usize, u64)>)> {
+fn parse_bag<'a>(input: &'a str) -> IResult<&'a str, BagDef> {
     let (input, name) = take_until(" bags contain ")(input)?;
     let (input, _) = tag(" bags contain ")(input)?;
     let (input, opt_none) = opt(tag("no other bags"))(input)?;
@@ -137,11 +139,7 @@ impl Runner for Day07 {
     fn part1(input: &Self::Input) -> Result<usize> {
         let contained_in = input
             .iter()
-            .map(|(bag, contains)| {
-                contains
-                    .into_iter()
-                    .map(move |(_, contain)| (contain.clone(), *bag))
-            })
+            .map(|(bag, contains)| contains.iter().map(move |(_, contain)| (*contain, *bag)))
             .flatten()
             .collect::<MultiMap<u64, u64>>();
         let mut count = 0;
@@ -154,7 +152,7 @@ impl Runner for Day07 {
             if !visited.contains(&bag) {
                 count += 1;
             }
-            visited.insert(bag.clone());
+            visited.insert(bag);
             let contained_in = contained_in.get_vec(&bag);
             for o in contained_in.unwrap_or(&vec![]) {
                 queue.push_back(*o);

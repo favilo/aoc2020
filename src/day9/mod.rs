@@ -68,7 +68,7 @@ impl Runner for Day09 {
     }
 }
 
-pub fn get_oddball(input: &Vec<usize>, window: usize) -> Result<(usize, usize)> {
+pub fn get_oddball(input: &[usize], window: usize) -> Result<(usize, usize)> {
     Ok(input
         .windows(window)
         .enumerate()
@@ -78,10 +78,9 @@ pub fn get_oddball(input: &Vec<usize>, window: usize) -> Result<(usize, usize)> 
                 i,
                 check,
                 window[..window.len() - 1]
-                    .into_iter()
+                    .iter()
                     .tuple_combinations()
-                    .filter(move |(&a, &b)| a + b == check)
-                    .next(),
+                    .find(move |(&a, &b)| a + b == check),
             )
         })
         .filter(|c| c.2.is_none())
@@ -90,7 +89,7 @@ pub fn get_oddball(input: &Vec<usize>, window: usize) -> Result<(usize, usize)> 
         .unwrap())
 }
 
-pub fn get_run(input: &Vec<usize>, idx: usize, target: usize) -> Result<(usize, usize)> {
+pub fn get_run(input: &[usize], idx: usize, target: usize) -> Result<(usize, usize)> {
     for i in 2..idx {
         let mut answer = input[..idx].windows(i).filter_map(|window| {
             if window.iter().sum::<usize>() == target {
@@ -101,8 +100,7 @@ pub fn get_run(input: &Vec<usize>, idx: usize, target: usize) -> Result<(usize, 
         });
 
         let answer = answer.next();
-        if answer.is_some() {
-            let answer = answer.unwrap();
+        if let Some(answer) = answer {
             return Ok((i, answer.0 + answer.1));
         }
     }

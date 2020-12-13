@@ -46,7 +46,7 @@ impl Room {
         (y * self.width) + x
     }
 
-    pub fn neighbors<'a, F>(&'a self, (x, y): Coord, coord_fn: F) -> *const Vec<usize>
+    pub fn neighbors<F>(&self, (x, y): Coord, coord_fn: F) -> *const Vec<usize>
     where
         F: Fn(&Room, Coord) -> Vec<usize>,
     {
@@ -79,8 +79,7 @@ impl Room {
                     .take_while(|&(x, y)| {
                         x >= 0 && y >= 0 && x < self.width as isize && y < self.height as isize
                     })
-                    .filter(|&(x, y)| self.get((x as usize, y as usize)) != Some(Tile::Floor))
-                    .next();
+                    .find(|&(x, y)| self.get((x as usize, y as usize)) != Some(Tile::Floor));
                 coord.map(|coord| self.get_coord(coord.0 as usize, coord.1 as usize))
             })
             .collect()
@@ -92,13 +91,13 @@ impl Room {
     {
         let changes = iproduct!((0..self.width), (0..self.height))
             .map(|coord| {
-                let neighbors = self.neighbors(coord, coord_fn).clone();
+                let neighbors = self.neighbors(coord, coord_fn);
                 (
                     coord,
                     self.get(coord),
                     unsafe { neighbors.as_ref().unwrap() }
                         .iter()
-                        .map(|&coord| self.tiles[coord].clone())
+                        .map(|&coord| self.tiles[coord])
                         .filter(|&state| state == Tile::Full)
                         .count(),
                 )
@@ -170,8 +169,7 @@ fn extended_neighbors<'a>(
             let coord = (1..)
                 .map(|i| (x + (a * i), y + (b * i)))
                 .take_while(|&(x, y)| x >= 0 && y >= 0 && x < dim.0 as isize && y < dim.1 as isize)
-                .filter(|&(x, y)| room[(x as usize, y as usize)] != Tile::Floor)
-                .next();
+                .find(|&(x, y)| room[(x as usize, y as usize)] != Tile::Floor);
             coord.map(|coord| (coord.0 as usize, coord.1 as usize))
         })
         .collect();
@@ -197,10 +195,10 @@ where
         .map(|coord| {
             (
                 coord,
-                *&room[coord],
+                room[coord],
                 neighbors_f(&room, (coord.0 as isize, coord.1 as isize), cache)
                     .iter()
-                    .map(|&coord| room[coord].clone())
+                    .map(|&coord| room[coord])
                     .filter(|&state| state == Tile::Full)
                     .count(),
             )
@@ -291,6 +289,10 @@ impl Runner for Day11Unsafe {
 
     fn day() -> usize {
         11
+    }
+
+    fn comment() -> &'static str {
+        "UNSAFE"
     }
 
     fn get_input(input: &str) -> Result<Self::Input> {

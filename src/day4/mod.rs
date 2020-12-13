@@ -74,7 +74,7 @@ impl Passport {
     fn new(line: &str) -> Option<Self> {
         let mut this = Self::default();
         line.split_whitespace().for_each(|entry| {
-            let entry = entry.split(":").collect::<Vec<_>>();
+            let entry = entry.split(':').collect::<Vec<_>>();
             let (k, v) = (entry[0], entry[1]);
             match k {
                 "byr" => this.birth_year = Some(v.parse().unwrap_or(0)),
@@ -161,7 +161,7 @@ impl Runner for Day04Slow {
             .map(|entry| {
                 entry
                     .split_whitespace()
-                    .flat_map(|p| p.split(":"))
+                    .flat_map(|p| p.split(':'))
                     .map(&str::to_owned)
                     .tuples()
                     .collect()

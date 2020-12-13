@@ -35,7 +35,7 @@ impl Runner for Day05 {
     }
 
     fn part1(input: &Self::Input) -> Result<usize> {
-        Ok(*input.into_iter().max().unwrap())
+        Ok(*input.iter().max().unwrap())
     }
 
     fn part2(input: &Self::Input) -> Result<usize> {

@@ -10,7 +10,7 @@ pub struct Machine {
 }
 
 impl Machine {
-    pub fn new(ops: &Vec<Op>) -> Self {
+    pub fn new(ops: &[Op]) -> Self {
         Self {
             instructions: ops.iter().map(|op| (*op, false)).collect(),
             ..Default::default()
@@ -38,7 +38,7 @@ impl Machine {
 
     pub fn run(&mut self) -> Result<&Self, &Self> {
         while self.ip < self.instructions.len() && !self.instructions[self.ip].1 {
-            if let Err(_) = self.step() {
+            if self.step().is_err() {
                 return Err(self);
             }
         }
