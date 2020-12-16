@@ -2,13 +2,13 @@ use anyhow::Result;
 
 use crate::Runner;
 
-pub struct DayXX;
-impl Runner for DayXX {
+pub struct Day17;
+impl Runner for Day17 {
     type Input = Vec<()>;
     type Output = usize;
 
     fn day() -> usize {
-        0 // XX
+        17
     }
 
     fn get_input(input: &str) -> Result<Self::Input> {
@@ -32,10 +32,10 @@ mod tests {
     fn sample1() -> Result<()> {
         let input = "0,3,6";
 
-        let input = DayXX::get_input(input)?;
+        let input = Day17::get_input(input)?;
         println!("{:?}", input);
-        assert_eq!(436, DayXX::part1(&input)?);
-        assert_eq!(175594, DayXX::part2(&input)?);
+        assert_eq!(436, Day17::part1(&input)?);
+        assert_eq!(175594, Day17::part2(&input)?);
         Ok(())
     }
 }

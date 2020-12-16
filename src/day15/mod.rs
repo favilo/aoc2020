@@ -1,5 +1,4 @@
 use anyhow::Result;
-use vec_map::VecMap;
 
 use crate::Runner;
 
