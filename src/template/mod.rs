@@ -2,21 +2,26 @@ use aoc_runner_derive::{aoc, aoc_generator};
 
 use anyhow::Result;
 
-type Input = Vec<i32>;
+pub struct DayXX;
+impl Runner for DayXX {
+    type Input = Vec<()>;
+    type Output = usize;
 
-#[aoc_generator(day3)]
-fn get_input(input: &str) -> Result<Input> {
-    Ok(todo!())
-}
+    fn day() -> usize {
+        0 // XX
+    }
 
-#[aoc(day3, part1)]
-fn part1(input: &Input) -> Result<usize> {
-    Ok(todo!())
-}
+    fn get_input(input: &str) -> Result<Self::Input> {
+        todo!()
+    }
 
-#[aoc(day3, part2)]
-fn part2(input: &Input) -> Result<usize> {
-    Ok(todo!())
+    fn part1(input: &Self::Input) -> Result<Self::Output> {
+        todo!()
+    }
+
+    fn part2(input: &Self::Input) -> Result<Self::Output> {
+        todo!()
+    }
 }
 
 #[cfg(test)]
@@ -25,22 +30,12 @@ mod tests {
 
     #[test]
     fn sample1() -> Result<()> {
-        let input = get_input(
-            "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd\n\
-             byr:1937 iyr:2017 cid:147 hgt:183cm\n\
-             \n\
-             iyr:2013 ecl:amb cid:350 eyr:2023 pid:028048884\n\
-             hcl:#cfa07d byr:1929\n\
-             \n\
-             hcl:#ae17e1 iyr:2013\n\
-             eyr:2024\n\
-             ecl:brn pid:760753108 byr:1931\n\
-             hgt:179cm\n\
-             \n\
-             hcl:#cfa07d eyr:2025 pid:166559648\n\
-             iyr:2011 ecl:brn hgt:59in",
-        ).unwrap();
-        assert_eq!(todo!(), part1(&input).unwrap());
+        let input = "0,3,6";
+
+        let input = DayXX::get_input(input)?;
+        println!("{:?}", input);
+        assert_eq!(436, DayXX::part1(&input)?);
+        assert_eq!(175594, DayXX::part2(&input)?);
         Ok(())
     }
 }
